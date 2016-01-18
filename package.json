@@ -1,0 +1,29 @@
+{
+  "name": "search-index-deleter",
+  "version": "0.0.1",
+  "description": "The deletion module for search-index",
+  "main": "lib/deleter.js",
+  "scripts": {
+    "test": "tape"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fergiemcdowall/search-index-deleter.git"
+  },
+  "keywords": [
+    "search",
+    "index",
+    "delete"
+  ],
+  "author": "Fergus McDowall",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fergiemcdowall/search-index-deleter/issues"
+  },
+  "homepage": "https://github.com/fergiemcdowall/search-index-deleter#readme",
+  "dependencies": {
+    "async": "^1.5.2",
+    "lodash": "^4.0.0",
+    "log-skeleton": "^1.1.0"
+  }
+}
