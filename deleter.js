@@ -144,7 +144,7 @@ var getOptions = function(givenOptions, callbacky) {
   ], function(err, results){
     var options = _.defaults(givenOptions, results[0])
     if (results[1] != null) {
-      options = _.defaults(options, results[1])
+      options.indexes = results[1]
     }
     return callbacky(err, options)
   })

@@ -1,6 +1,6 @@
 {
   "name": "search-index-deleter",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "The deletion module for search-index",
   "main": "deleter.js",
   "scripts": {
