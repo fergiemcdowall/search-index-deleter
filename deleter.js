@@ -70,8 +70,13 @@ module.exports = function (givenOptions, callback) {
                 // make undefined error null
                 if (_.isUndefined(err)) err = null;
                 options.indexes.get('DOCUMENT-COUNT', function (err, value) {
+                  var docCount
+                  if (err)  //no DOCUMENT-COUNT set- first indexing
+                    docCount = 0
+                  else
+                    docCount = (+value - (numberDocsToDelete))
                   options.indexes.put('DOCUMENT-COUNT',
-                                      (+value - (numberDocsToDelete)),
+                                      docCount,
                                       function (errr) {
                                         return callbacky(err);
                                       });
