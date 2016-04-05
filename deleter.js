@@ -1,8 +1,11 @@
 //deletes all references to a document from the search index
 
-var skeleton = require('log-skeleton');
+var _defaults = require('lodash.defaults');
+var _flatten = require('lodash.flatten');
+var _remove = require('lodash.remove')
+var _uniq = require('lodash.uniq');
 var a = require('async');
-var _ = require('lodash');
+var skeleton = require('log-skeleton');
 
 module.exports = function (givenOptions, callback) {
 
@@ -16,7 +19,7 @@ module.exports = function (givenOptions, callback) {
       if (!options.deletable) {
         return callbacky(new Error('this index is non-deleteable- set "deletable: true" in startup options'))
       }
-      if (!_.isArray(deleteBatch)) {
+      if (!Array.isArray(deleteBatch)) {
         deleteBatch = [deleteBatch]
       }
       a.mapLimit(deleteBatch, 5, function (docID, callback) {
@@ -32,15 +35,19 @@ module.exports = function (givenOptions, callback) {
         });
       }, function (err, results) {
         if (!err) {
+          results = _flatten(results).sort()
+          results = _uniq(results)
           a.mapLimit(
-            _(results).flatten().sort().uniq(true).value(), 5,
+            // _(results).flatten().sort().uniq(true).value(),
+            results,
+            5,
             function (key, callback) {
               options.indexes.get(key, function (err, value) {
                 var dbInstruction = {type: 'put',
                                      key: key};
                 var recalibratedValue = [];
                 if (key.substring(0, 2) == 'TF') {
-                  recalibratedValue = _.remove(value, function (n) {
+                  recalibratedValue = _remove(value, function (n) {
                     return (deleteBatch.indexOf(n + '') == -1);
                   }).sort();
                 }
@@ -68,7 +75,7 @@ module.exports = function (givenOptions, callback) {
                 if (err) log.warn('Ooops!', err);
                 else log.info('batch indexed!');
                 // make undefined error null
-                if (_.isUndefined(err)) err = null;
+                if (typeof err == undefined) err = null;
                 options.indexes.get('DOCUMENT-COUNT', function (err, value) {
                   var docCount
                   if (err)  //no DOCUMENT-COUNT set- first indexing
@@ -110,11 +117,10 @@ module.exports = function (givenOptions, callback) {
 
 
 var getOptions = function(givenOptions, callbacky) {
-  const _ = require('lodash')
   const async = require('async')
   const bunyan = require('bunyan')
   const levelup = require('levelup')
-  const tv = require('term-vector')
+  const sw = require('stopword')
   givenOptions = givenOptions || {}
   async.parallel([
     function(callback) {
@@ -126,7 +132,7 @@ var getOptions = function(givenOptions, callbacky) {
       defaultOps.logLevel = 'error'
       defaultOps.nGramLength = 1
       defaultOps.separator = /[\|' \.,\-|(\n)]+/
-      defaultOps.stopwords = tv.getStopwords('en').sort()
+      defaultOps.stopwords = sw.getStopwords('en').sort()
       defaultOps.log = bunyan.createLogger({
         name: 'search-index',
         level: givenOptions.logLevel || defaultOps.logLevel
@@ -146,7 +152,7 @@ var getOptions = function(givenOptions, callbacky) {
       }
     }
   ], function(err, results){
-    var options = _.defaults(givenOptions, results[0])
+    var options = _defaults(givenOptions, results[0])
     if (results[1] != null) {
       options.indexes = results[1]
     }
