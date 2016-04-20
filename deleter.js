@@ -46,12 +46,12 @@ module.exports = function (givenOptions, callback) {
                 var dbInstruction = {type: 'put',
                                      key: key};
                 var recalibratedValue = [];
-                if (key.substring(0, 2) == 'TF') {
+                if (key.substring(0, 2) == 'DF') {
                   recalibratedValue = _remove(value, function (n) {
                     return (deleteBatch.indexOf(n + '') == -1);
                   }).sort();
                 }
-                else if (key.substring(0, 2) == 'RI') {
+                else if (key.substring(0, 2) == 'TF') {
                   recalibratedValue = value.filter(function (item) {
                     return (deleteBatch.indexOf(item[1]) == -1);
                   }).sort(function (a, b) {
