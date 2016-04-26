@@ -1,6 +1,6 @@
 {
   "name": "search-index-deleter",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "The deletion module for search-index",
   "main": "deleter.js",
   "scripts": {
@@ -30,7 +30,6 @@
     "lodash.flatten": "^4.1.1",
     "lodash.remove": "^4.3.0",
     "lodash.uniq": "^4.2.1",
-    "log-skeleton": "^1.1.0",
     "stopword": "0.0.6"
   }
 }
