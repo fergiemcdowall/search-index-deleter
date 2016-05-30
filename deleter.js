@@ -79,7 +79,9 @@ var deleteThisBatch = function (options, numberDocsToDelete, deleteBatch, result
         return callback(err, dbInstruction)
       })
     }, function (err, dbInstructions) {
-      options.log.info(err)
+      if (err) {
+        options.log.info(err)
+      }
       deleteBatch.forEach(function (docID) {
         dbInstructions.push({
           type: 'del',
@@ -87,8 +89,11 @@ var deleteThisBatch = function (options, numberDocsToDelete, deleteBatch, result
         })
       })
       options.indexes.batch(dbInstructions, function (err) {
-        if (err) options.log.warn('Ooops!', err)
-        else options.log.info('batch indexed!')
+        if (err) {
+          options.log.warn('Ooops!', err)
+        } else {
+          options.log.info({docids: deleteBatch}, 'DELETE')
+        }
         // make undefined error null
         if (typeof err === undefined) err = null
         options.indexes.get('DOCUMENT-COUNT', function (err, value) {
